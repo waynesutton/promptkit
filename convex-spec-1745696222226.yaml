@@ -1,0 +1,815 @@
+openapi: 3.0.3
+info:
+  title: Convex App - OpenAPI 3.0
+  version: 0.0.0
+servers:
+  - url: https://healthy-coyote-430.convex.cloud
+security:
+  - bearerAuth: []
+tags:
+  - name: query
+    description: Functions that read data
+  - name: mutation
+    description: Functions that write/update/delete data
+  - name: action
+    description: Functions that can make calls to external APIs
+paths:
+  /api/run/auth/isAuthenticated:
+    post:
+      summary: Calls a query at the path auth.js:isAuthenticated
+      tags:
+        - query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_auth.isAuthenticated"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_auth.isAuthenticated"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/auth/loggedInUser:
+    post:
+      summary: Calls a query at the path auth.js:loggedInUser
+      tags:
+        - query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_auth.loggedInUser"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_auth.loggedInUser"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/auth/signIn:
+    post:
+      summary: Calls a action at the path auth.js:signIn
+      tags:
+        - action
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_auth.signIn"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_auth.signIn"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/auth/signOut:
+    post:
+      summary: Calls a action at the path auth.js:signOut
+      tags:
+        - action
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_auth.signOut"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_auth.signOut"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/prompts/getSession:
+    post:
+      summary: Calls a query at the path prompts.js:getSession
+      tags:
+        - query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_prompts.getSession"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_prompts.getSession"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/prompts/getQuestions:
+    post:
+      summary: Calls a query at the path prompts.js:getQuestions
+      tags:
+        - query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_prompts.getQuestions"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_prompts.getQuestions"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/prompts/startNewSession:
+    post:
+      summary: Calls a mutation at the path prompts.js:startNewSession
+      tags:
+        - mutation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_prompts.startNewSession"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_prompts.startNewSession"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/prompts/answerQuestion:
+    post:
+      summary: Calls a mutation at the path prompts.js:answerQuestion
+      tags:
+        - mutation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_prompts.answerQuestion"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_prompts.answerQuestion"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+  /api/run/prompts/exportPrompt:
+    post:
+      summary: Calls a mutation at the path prompts.js:exportPrompt
+      tags:
+        - mutation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request_prompts.exportPrompt"
+        required: true
+      responses:
+        "200":
+          description: Convex executed your request and returned a result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response_prompts.exportPrompt"
+        "400":
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+        "500":
+          description: Convex Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token of the format "Bearer {token}" for normal authentication and "Convex {token}" for admin tokens.
+  schemas:
+    Request_auth.isAuthenticated:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+
+    Response_auth.isAuthenticated:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_auth.loggedInUser:
+      type: object
+      required:
+        - args
+      properties:
+        args: {}
+
+    Response_auth.loggedInUser:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_auth.signIn:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          properties:
+            calledBy:
+              type: string
+            params: {}
+            provider:
+              type: string
+            refreshToken:
+              type: string
+            verifier:
+              type: string
+
+    Response_auth.signIn:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_auth.signOut:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+
+    Response_auth.signOut:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_auth.store:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          required:
+            - args
+          properties:
+            args:
+              oneOf:
+                - type: object
+                  required:
+                    - generateTokens
+                    - type
+                    - userId
+                  properties:
+                    generateTokens:
+                      type: boolean
+                    sessionId:
+                      type: string
+                      description: ID from table "authSessions"
+                    type:
+                      type: string
+                      enum:
+                        - "signIn"
+                    userId:
+                      type: string
+                      description: ID from table "users"
+                - type: object
+                  required:
+                    - type
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - "signOut"
+                - type: object
+                  required:
+                    - refreshToken
+                    - type
+                  properties:
+                    refreshToken:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "refreshSession"
+                - type: object
+                  required:
+                    - allowExtraProviders
+                    - generateTokens
+                    - params
+                    - type
+                  properties:
+                    allowExtraProviders:
+                      type: boolean
+                    generateTokens:
+                      type: boolean
+                    params: {}
+                    provider:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "verifyCodeAndSignIn"
+                    verifier:
+                      type: string
+                - type: object
+                  required:
+                    - type
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - "verifier"
+                - type: object
+                  required:
+                    - signature
+                    - type
+                    - verifier
+                  properties:
+                    signature:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "verifierSignature"
+                    verifier:
+                      type: string
+                - type: object
+                  required:
+                    - profile
+                    - provider
+                    - providerAccountId
+                    - signature
+                    - type
+                  properties:
+                    profile: {}
+                    provider:
+                      type: string
+                    providerAccountId:
+                      type: string
+                    signature:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "userOAuth"
+                - type: object
+                  required:
+                    - allowExtraProviders
+                    - code
+                    - expirationTime
+                    - provider
+                    - type
+                  properties:
+                    accountId:
+                      type: string
+                      description: ID from table "authAccounts"
+                    allowExtraProviders:
+                      type: boolean
+                    code:
+                      type: string
+                    email:
+                      type: string
+                    expirationTime:
+                      type: number
+                    phone:
+                      type: string
+                    provider:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "createVerificationCode"
+                - type: object
+                  required:
+                    - account
+                    - profile
+                    - provider
+                    - type
+                  properties:
+                    account:
+                      type: object
+                      required:
+                        - id
+                      properties:
+                        id:
+                          type: string
+                        secret:
+                          type: string
+                    profile: {}
+                    provider:
+                      type: string
+                    shouldLinkViaEmail:
+                      type: boolean
+                    shouldLinkViaPhone:
+                      type: boolean
+                    type:
+                      type: string
+                      enum:
+                        - "createAccountFromCredentials"
+                - type: object
+                  required:
+                    - account
+                    - provider
+                    - type
+                  properties:
+                    account:
+                      type: object
+                      required:
+                        - id
+                      properties:
+                        id:
+                          type: string
+                        secret:
+                          type: string
+                    provider:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "retrieveAccountWithCredentials"
+                - type: object
+                  required:
+                    - account
+                    - provider
+                    - type
+                  properties:
+                    account:
+                      type: object
+                      required:
+                        - id
+                        - secret
+                      properties:
+                        id:
+                          type: string
+                        secret:
+                          type: string
+                    provider:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - "modifyAccount"
+                - type: object
+                  required:
+                    - type
+                    - userId
+                  properties:
+                    except:
+                      type: array
+                      items:
+                        type: string
+                        description: ID from table "authSessions"
+                    type:
+                      type: string
+                      enum:
+                        - "invalidateSessions"
+                    userId:
+                      type: string
+                      description: ID from table "users"
+
+    Response_auth.store:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_prompts.getSession:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          required:
+            - sessionId
+          properties:
+            sessionId:
+              type: string
+              description: ID from table "sessions"
+
+    Response_prompts.getSession:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_prompts.getQuestions:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          required:
+            - sessionId
+          properties:
+            sessionId:
+              type: string
+              description: ID from table "sessions"
+
+    Response_prompts.getQuestions:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_prompts.startNewSession:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          required:
+            - prompt
+          properties:
+            prompt:
+              type: string
+
+    Response_prompts.startNewSession:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_prompts.answerQuestion:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          required:
+            - answer
+            - sessionId
+          properties:
+            answer:
+              type: string
+            sessionId:
+              type: string
+              description: ID from table "sessions"
+
+    Response_prompts.answerQuestion:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    Request_prompts.exportPrompt:
+      type: object
+      required:
+        - args
+      properties:
+        args:
+          type: object
+          required:
+            - format
+            - sessionId
+          properties:
+            format:
+              oneOf:
+                - type: string
+                  enum:
+                    - "markdown"
+                - type: string
+                  enum:
+                    - "json"
+                - type: string
+                  enum:
+                    - "xml"
+            sessionId:
+              type: string
+              description: ID from table "sessions"
+
+    Response_prompts.exportPrompt:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+            - "error"
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+
+    FailedResponse:
+      type: object
+      properties: {}
