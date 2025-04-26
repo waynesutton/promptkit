@@ -279,13 +279,36 @@ export default function App() {
         </div>
       </main>
       <footer className="text-center py-4 border-t border-gray-100 mt-auto">
-        <a
-          href="https://chef.convex.dev"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-          Vibe Code with Convex Chef
-        </a>
+        <div className="flex justify-center items-center space-x-4">
+          <a
+            href="https://chef.convex.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            Vibe Code with Convex Chef
+          </a>
+          <span className="text-gray-300">|</span>
+          <a
+            href="https://github.com/waynesutton/promptkit"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub Repository"
+            className="text-gray-500 hover:text-gray-700 transition-colors">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="inline-block">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-1.5 6-6.5.06-1.35-.49-2.6-1.5-3.5.49-1.2.46-2.5-.14-3.5A4.7 4.7 0 0 0 17 4c-1.5 0-2.8.6-4 1.5-1.2-.4-2.5-.4-4 0C7.8 4.6 6.5 4 5 4a4.7 4.7 0 0 0-2.86 1.1c-.6 1-.63 2.3-.14 3.5A4.3 4.3 0 0 0 1 12c0 5 3 6.5 6 6.5-1 1-1.5 2.5-1.5 3.5V22" />
+            </svg>
+          </a>
+        </div>
       </footer>
     </div>
   );
