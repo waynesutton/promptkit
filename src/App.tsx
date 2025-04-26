@@ -222,6 +222,44 @@ export default function App() {
                       ))}
                     </div>
 
+                    <hr className="my-4 border-gray-200" />
+
+                    <h4 className="text-sm font-semibold text-gray-600 mb-3 text-center">
+                      Send to Chef
+                    </h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      {["markdown", "json", "xml"].map((format) => (
+                        <button
+                          key={`send-${format}`}
+                          onClick={async () => {
+                            if (sessionId) {
+                              try {
+                                const content = await exportPrompt({
+                                  sessionId,
+                                  format: format as "markdown" | "json" | "xml",
+                                });
+                                const chefUrl = `https://chef.convex.dev/?prefill=${encodeURIComponent(content)}`;
+                                window.open(chefUrl, "_blank");
+                                toast.success(`Sent ${format.toUpperCase()} to Chef!`);
+                              } catch (error) {
+                                console.error("Failed to export or send prompt:", error);
+                                toast.error("Failed to generate content for Chef.");
+                              }
+                            } else {
+                              toast.error("Session not found.");
+                            }
+                          }}
+                          className="py-2 px-3 bg-[#EE342E] text-white rounded-lg
+                                   text-sm font-medium
+                                   transition-all duration-200 ease-in-out
+                                   border border-red-700/20
+                                   focus:outline-none focus:ring-2 focus:ring-red-500/30
+                                   hover:bg-[#D42A23] hover:shadow-md">
+                          Send {format.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+
                     <button
                       onClick={() => {
                         setSessionId(null);
@@ -240,6 +278,15 @@ export default function App() {
           )}
         </div>
       </main>
+      <footer className="text-center py-4 border-t border-gray-100 mt-auto">
+        <a
+          href="https://chef.convex.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+          Vibe Code with Convex Chef
+        </a>
+      </footer>
     </div>
   );
 }
