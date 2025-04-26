@@ -132,7 +132,7 @@ function MainContent() {
                 Grammarly for AI Prompts
               </h1>
               <p className="text-gray-500 text-lg">
-                Enhance your prompts with AI. Export via Markdown, JSON, XML—done.
+                Enhance your prompts with AI. Export via Markdown, JSON, XML for vibe coding.
               </p>
             </div>
 
