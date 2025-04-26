@@ -228,7 +228,7 @@ export default function App() {
                         setPrompt("");
                         setAnswer("");
                       }}
-                      className="w-full py-3 px-4 bg-gray-100 text-black rounded-xl font-medium
+                      className="w-full mt-5 py-3 px-4 bg-gray-100 text-black rounded-xl font-medium
                                  shadow-sm hover:bg-gray-200 transition-colors duration-150
                                  focus:outline-none focus:ring-2 focus:ring-gray-300">
                       Start Over
