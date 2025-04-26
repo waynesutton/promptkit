@@ -98,8 +98,13 @@ export const generateQuestion = action({
       {
         role: "system" as const,
         content: `
-You are an AI assistant whose job is to ask one concise clarifying question to better understand the user's original prompt.
-Your output should ONLY be the question text itself.
+You are an AI assistant and expert in building AI applications using platforms like Convex Chef, Bolt, ChatGPT Lovable, Cursor, and Windsurf. You are also an expert full-stack developer and experienced vibe coder.
+
+Your role is to ask one concise, high-signal clarifying question to better understand the user's original prompt and help improve it. Only ask a question if the user's prompt is ambiguous or incomplete.
+
+Never ask a question if the user is clearly trying to deploy or build their app immediately — assume they're ready to generate now.
+
+Your output should ONLY be the enhanced text prompt of the clarifying question in the selected format with no extra explanation or headers or formatting.
 `.trim(),
       },
       {
@@ -328,5 +333,34 @@ export const generateAndWriteEnhancedPrompt = internalAction({
       enhancedPrompt: enhanced,
     });
     return null;
+  },
+});
+
+// Updated query to list completed sessions AND their question counts
+export const listCompletedSessions = query({
+  args: {},
+  handler: async (ctx) => {
+    const sessions = await ctx.db
+      .query("sessions")
+      .filter((q) => q.eq(q.field("status"), "complete"))
+      .filter((q) => q.neq(q.field("enhancedPrompt"), undefined))
+      .order("desc")
+      .collect();
+
+    // Fetch question count for each session
+    const sessionsWithCounts = await Promise.all(
+      sessions.map(async (session) => {
+        const questions = await ctx.db
+          .query("questions")
+          .withIndex("by_session", (q) => q.eq("sessionId", session._id))
+          .collect();
+        return {
+          ...session,
+          questionCount: questions.length,
+        };
+      })
+    );
+
+    return sessionsWithCounts;
   },
 });
