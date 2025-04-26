@@ -74,7 +74,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
+      <main className="flex-1 flex items-center justify-center px-1 pt-1 pb-2 sm:px-8 sm:pt-4 sm:pb-8">
         <div className="w-full max-w-3xl mx-auto space-y-8">
           {!sessionId ? (
             <div className="space-y-6">
