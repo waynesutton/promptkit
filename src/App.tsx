@@ -199,7 +199,7 @@ function MainContent() {
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handlePromptKeyDown}
-                  placeholder="Enter your prompt here..."
+                  placeholder="What do you want to build? Enter your prompt here..."
                   className="w-full h-40 p-4 rounded-xl border border-gray-200 bg-white/50 backdrop-blur-sm
                             focus:ring-2 focus:ring-gray-500/20 focus:border-gray-500 outline-none
                             transition-all duration-200 ease-in-out
