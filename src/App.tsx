@@ -331,7 +331,7 @@ function MainContent() {
                                     shadow-sm hover:bg-blue-700 transition-colors duration-150
                                     focus:outline-none focus:ring-2 focus:ring-blue-300 flex justify-center items-center gap-2">
                         <BarChartHorizontalBig className="h-4 w-4" />
-                        View Savings ({potentialSavings.toLocaleString()} chars)
+                        View Savings
                       </button>
                     </Link>
                     <button
