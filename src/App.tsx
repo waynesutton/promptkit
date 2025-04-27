@@ -4,7 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
-import { ClipboardCopy, BarChartHorizontalBig, Github } from "lucide-react";
+import {
+  ClipboardCopy,
+  BarChartHorizontalBig,
+  Github,
+  Download,
+  ExternalLink,
+  RotateCcw,
+} from "lucide-react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import TokensSavedPage from "./pages/TokensSavedPage";
 
@@ -350,7 +357,9 @@ function MainContent() {
                                   transition-all duration-200 ease-in-out
                                   border border-black/5
                                   focus:outline-none focus:ring-2 focus:ring-black/20
-                                  hover:bg-gray-900 hover:shadow-md">
+                                  hover:bg-gray-900 hover:shadow-md
+                                  flex items-center justify-center gap-2">
+                          <Download className="h-4 w-4" />
                           {format.toUpperCase()}
                         </button>
                       ))}
@@ -390,8 +399,10 @@ function MainContent() {
                                   transition-all duration-200 ease-in-out
                                   border border-red-700/20
                                   focus:outline-none focus:ring-2 focus:ring-red-500/30
-                                  hover:bg-[#D42A23] hover:shadow-md">
+                                  hover:bg-[#D42A23] hover:shadow-md
+                                  flex items-center justify-center gap-1.5">
                           Send {format.toUpperCase()}
+                          <ExternalLink className="h-4 w-4" />
                         </button>
                       ))}
                     </div>
@@ -417,7 +428,9 @@ function MainContent() {
                       }}
                       className="flex-1 py-3 px-4 bg-gray-100 text-black rounded-xl font-medium
                                  shadow-sm hover:bg-gray-200 transition-colors duration-150
-                                 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                                 focus:outline-none focus:ring-2 focus:ring-gray-300
+                                 flex items-center justify-center gap-2">
+                      <RotateCcw className="h-4 w-4" />
                       Start Over
                     </button>
                   </div>
@@ -488,14 +501,14 @@ export default function App() {
             Powered by Convex
           </Link>
           <span className="text-gray-300">|</span>
-          <a
+          {/* <a
             href="https://github.com/waynesutton/promptkit"
             target="_blank"
             rel="noopener noreferrer"
             title="GitHub Repository"
-            className="text-gray-500 hover:text-gray-700 transition-colors">
-            <Github className="inline-block h-5 w-5" /> Repo
-          </a>
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            Open Source Repo
+          </a> */}
         </div>
       </footer>
     </div>

@@ -18,6 +18,9 @@ This document provides a brief description of the main files in the project.
 - `components.json`: Configuration for `shadcn/ui`.
 - `eslint.config.js`: Configuration file for ESLint, the code linter.
 - `.gitignore`: Specifies intentionally untracked files that Git should ignore.
+- `files.md`: This file, containing descriptions of project files.
+- `.DS_Store`: macOS specific file (should be in .gitignore).
+- `convex-spec-*.yaml`: Convex diagnostic files (should be in .gitignore).
 
 ## `convex/` Directory (Backend)
 
@@ -26,16 +29,18 @@ This document provides a brief description of the main files in the project.
 - `convex/auth.ts`: Sets up Convex Auth, provides authentication helper functions (`signIn`, `signOut`, `loggedInUser` query).
 - `convex/http.ts`: Defines the main HTTP router, integrating authentication routes.
 - `convex/prompts.ts`: Contains the core backend logic for the prompt enhancement feature, including database queries (`getSession`, `getQuestions`), mutations (`startNewSession`, `answerQuestion`, `exportPrompt`), and actions (`generateQuestion`, `generateEnhancedPrompt`).
-- `convex/router.ts`: Initializes the Convex HTTP router instance.
+- `convex/router.ts`: Initializes the Convex HTTP router instance. (Note: Currently unused in the example provided in README, but kept for structure).
 - `convex/schema.ts`: Defines the database schema for the application, including tables like `sessions`, `questions`, `exports`, and the tables required by `@convex-dev/auth`.
 - `convex/tsconfig.json`: TypeScript configuration specific to the Convex backend functions.
 
 ## `src/` Directory (Frontend)
 
-- `src/main.tsx`: The main entry point for the React application. Initializes the Convex client and wraps the app with the auth provider.
-- `src/App.tsx`: The root React component containing the main UI structure and logic for interacting with the Convex backend (fetching session data, questions, handling form submissions, exports).
+- `src/main.tsx`: The main entry point for the React application. Initializes the Convex client and wraps the app with the auth provider and router.
+- `src/App.tsx`: The root React component containing the main UI structure (Header, Footer, Routing), session logic, form handling, export functionality, and interaction with Convex backend functions.
 - `src/index.css`: Global CSS styles and Tailwind CSS directives.
-- `src/SignInForm.tsx`: A React component providing the UI for user sign-in and sign-up using email/password or anonymous auth.
-- `src/SignOutButton.tsx`: A React component that displays a sign-out button when the user is authenticated.
-- `src/components/`: Directory likely containing reusable UI components (e.g., `InteractiveHoverButton` from `shadcn/ui`).
+- `src/SignInForm.tsx`: A React component providing the UI for user sign-in (currently unused but available).
+- `src/SignOutButton.tsx`: A React component that displays a sign-out button (currently unused but available).
+- `src/components/ui/interactive-hover-button.tsx`: A reusable UI component for buttons with interactive hover effects.
+- `src/pages/TokensSavedPage.tsx`: React component for the `/tokens` route, displaying enhancement statistics and charts.
 - `src/vite-env.d.ts`: TypeScript type definitions for Vite environment variables.
+- `src/lib/utils.ts`: (Assumed based on typical `shadcn/ui` setup) Utility functions, possibly for class name merging.
