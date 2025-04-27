@@ -10,18 +10,31 @@ const openai = new OpenAI({
 });
 
 export const startNewSession = mutation({
-  args: { prompt: v.string() },
+  args: {
+    prompt: v.string(),
+    sessionType: v.optional(v.union(v.literal("interactive"), v.literal("oneshot"))),
+  },
   handler: async (ctx, args) => {
+    const type = args.sessionType ?? "interactive";
+    const initialStatus = type === "oneshot" ? "enhancing" : "questioning";
+
     const sessionId = await ctx.db.insert("sessions", {
       originalPrompt: args.prompt,
       currentStep: 0,
-      status: "questioning",
+      status: initialStatus,
+      sessionType: type,
     });
 
-    await ctx.scheduler.runAfter(0, internal.prompts.generateAndWriteQuestion, {
-      sessionId,
-      previousQuestions: [],
-    });
+    if (type === "oneshot") {
+      await ctx.scheduler.runAfter(0, internal.prompts.generateOneShotRefinement, {
+        sessionId,
+      });
+    } else {
+      await ctx.scheduler.runAfter(0, internal.prompts.generateAndWriteQuestion, {
+        sessionId,
+        previousQuestions: [],
+      });
+    }
 
     return sessionId;
   },
@@ -50,7 +63,7 @@ export const answerQuestion = mutation({
 
     if (nextStep >= 3) {
       await ctx.db.patch(args.sessionId, {
-        status: "complete",
+        status: "enhancing",
         currentStep: nextStep,
       });
 
@@ -281,7 +294,7 @@ export const generateAndWriteQuestion = internalAction({
       {
         role: "system" as const,
         content: `
-You are an AI assistant, an expert in building AI applications and an expert full-stack developer and experienced vibe coder helping users create clear and structured application prompts for AI code-gen app builders.
+You are an AI assistant, an expert in building AI applications, an expert in AI code-gen platforms, and an expert full-stack developer and experienced vibe coder helping users create clear and structured application prompts for AI code-gen app builders.
 
 Your role is to ask one concise, high-signal clarifying question to better understand the user's original prompt and help improve it. Only ask a question if the user's prompt is ambiguous or incomplete.
 
@@ -310,7 +323,10 @@ export const writeEnhancedPrompt = internalMutation({
   args: { sessionId: v.id("sessions"), enhancedPrompt: v.string() },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.sessionId, { enhancedPrompt: args.enhancedPrompt });
+    await ctx.db.patch(args.sessionId, {
+      enhancedPrompt: args.enhancedPrompt,
+      status: "complete",
+    });
     return null;
   },
 });
@@ -343,7 +359,42 @@ export const generateAndWriteEnhancedPrompt = internalAction({
   },
 });
 
-// Updated query to list completed sessions AND their question counts
+export const generateOneShotRefinement = internalAction({
+  args: { sessionId: v.id("sessions") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const session = await ctx.runQuery(api.prompts.getSession, { sessionId: args.sessionId });
+    if (!session) throw new Error("Session not found");
+
+    const messages: Array<{ role: "system" | "user"; content: string }> = [
+      {
+        role: "system" as const,
+        content: `
+You are an AI assistant, an expert in building AI applications, an expert in AI code-gen applications, and an expert full-stack developer and experienced vibe coder helping users create clear and structured application prompts for AI code-gen app builders.
+
+Your role is to immediately refine the user's original prompt into a clear, structured, and enhanced version suitable for an AI code-gen app builder.
+Do not ask any questions. Directly output the refined prompt.
+
+Your output should ONLY be the enhanced text prompt, with no extra explanation, headers, or formatting.
+`.trim(),
+      },
+      {
+        role: "user" as const,
+        content: `Original prompt: "${session.originalPrompt}"\n\nRefine this prompt immediately:`,
+      },
+    ];
+
+    const response = await openai.chat.completions.create({ model: "gpt-4o", messages });
+    const enhanced = response.choices[0].message.content ?? session.originalPrompt;
+
+    await ctx.runMutation(internal.prompts.writeEnhancedPrompt, {
+      sessionId: args.sessionId,
+      enhancedPrompt: enhanced,
+    });
+    return null;
+  },
+});
+
 export const listCompletedSessions = query({
   args: {},
   handler: async (ctx) => {
@@ -354,7 +405,6 @@ export const listCompletedSessions = query({
       .order("desc")
       .collect();
 
-    // Fetch question count for each session
     const sessionsWithCounts = await Promise.all(
       sessions.map(async (session) => {
         const questions = await ctx.db

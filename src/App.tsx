@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
-import { ClipboardCopy, BarChartHorizontalBig } from "lucide-react";
+import { ClipboardCopy, BarChartHorizontalBig, Github } from "lucide-react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import TokensSavedPage from "./pages/TokensSavedPage";
 
@@ -20,6 +20,7 @@ function MainContent() {
   const [thinkingDots, setThinkingDots] = useState("."); // State for animated dots
   const location = useLocation();
   const answerTextareaRef = useRef<HTMLTextAreaElement>(null); // Ref for answer textarea
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to track submission
 
   useState(() => {
     if (location.pathname === "/" && sessionId) {
@@ -35,9 +36,13 @@ function MainContent() {
   const exportPrompt = useMutation(api.prompts.exportPrompt);
 
   const currentQuestion = questions.find((q) => q.order === session?.currentStep);
+
+  // Determine if the session is in a thinking state
   const isGeneratingQuestion = sessionId && session?.status === "questioning" && !currentQuestion;
   const isGeneratingEnhancedPrompt =
-    sessionId && session?.status === "complete" && !session.enhancedPrompt;
+    sessionId &&
+    (session?.status === "enhancing" ||
+      (session?.sessionType === "oneshot" && session?.status !== "complete"));
   const isThinking = isGeneratingQuestion || isGeneratingEnhancedPrompt;
 
   // Effect for animating thinking dots
@@ -69,10 +74,7 @@ function MainContent() {
 
   // Explicit handlers for Enter key submission
   const handlePromptKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey && prompt.trim()) {
-      event.preventDefault(); // Prevent newline
-      handleSubmit(event as any); // Trigger submit (cast event type if needed)
-    }
+    // No longer submitting on Enter
   };
 
   const handleAnswerKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -82,21 +84,51 @@ function MainContent() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent | React.KeyboardEvent) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
+  // Handler for starting the interactive session
+  const handleStartInteractive = async () => {
+    if (!prompt.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const id = await startSession({ prompt: prompt.trim(), sessionType: "interactive" });
+      setSessionId(id);
+      setPrompt("");
+    } catch (error) {
+      console.error("Failed to start interactive session:", error);
+      toast.error("Failed to start session. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    const id = await startSession({ prompt: prompt.trim() });
-    setSessionId(id);
-    setPrompt("");
+  // Handler for starting the one-shot refinement session
+  const handleStartOneShot = async () => {
+    if (!prompt.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const id = await startSession({ prompt: prompt.trim(), sessionType: "oneshot" });
+      setSessionId(id);
+      setPrompt("");
+    } catch (error) {
+      console.error("Failed to start one-shot session:", error);
+      toast.error("Failed to start session. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleAnswer = async (e: React.FormEvent | React.KeyboardEvent) => {
     e.preventDefault();
-    if (!sessionId || !answer.trim()) return;
-
-    await submitAnswer({ sessionId, answer: answer.trim() });
-    setAnswer("");
+    if (!sessionId || !answer.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await submitAnswer({ sessionId, answer: answer.trim() });
+      setAnswer("");
+    } catch (error) {
+      console.error("Failed to submit answer:", error);
+      toast.error("Failed to submit answer. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleExport = async (format: "markdown" | "json" | "xml") => {
@@ -128,8 +160,8 @@ function MainContent() {
         {!sessionId ? (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                Grammarly for AI Prompts
+              <h1 className="text-3xl sm:text-3xl font-bold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                Prompt Enhancement
               </h1>
               <p className="text-gray-500 text-lg">
                 Enhance your prompts with AI. Export via Markdown, JSON, XML for vibe coding.
@@ -154,7 +186,7 @@ function MainContent() {
               />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
               <div className="relative group">
                 <textarea
                   value={prompt}
@@ -166,21 +198,48 @@ function MainContent() {
                             transition-all duration-200 ease-in-out
                             text-gray-700 placeholder-gray-400
                             shadow-sm hover:shadow-md"
+                  disabled={isSubmitting}
                 />
               </div>
-              <button
-                type="submit"
-                disabled={!prompt.trim()}
-                className="w-full py-3 px-4 bg-black text-white rounded-xl font-medium
-                        shadow-lg shadow-black/20
-                        transition-all duration-200 ease-in-out
-                        hover:bg-gray-900 hover:shadow-xl hover:shadow-black/30
-                        focus:ring-2 focus:ring-black/20 focus:outline-none
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        disabled:hover:bg-black disabled:hover:shadow-lg">
-                Start Enhancement
-              </button>
-            </form>
+              <div className="flex space-x-4">
+                <div className="flex-1">
+                  <button
+                    type="button"
+                    onClick={handleStartInteractive}
+                    disabled={!prompt.trim() || isSubmitting}
+                    className="w-full py-3 px-4 bg-black text-white rounded-xl font-medium
+                                shadow-lg shadow-black/20
+                                transition-all duration-200 ease-in-out
+                                hover:bg-gray-900 hover:shadow-xl hover:shadow-black/30
+                                focus:ring-2 focus:ring-black/20 focus:outline-none
+                                disabled:opacity-50 disabled:cursor-not-allowed
+                                disabled:hover:bg-black disabled:hover:shadow-lg">
+                    {isSubmitting ? "Starting..." : "Start Enhancement"}
+                  </button>
+                  <p className="text-xs text-gray-500 text-center mt-1">
+                    3-question interactive flow
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <button
+                    type="button"
+                    onClick={handleStartOneShot}
+                    disabled={!prompt.trim() || isSubmitting}
+                    className="w-full py-3 px-4 bg-blue-600 text-white rounded-xl font-medium
+                                shadow-lg shadow-blue-500/20
+                                transition-all duration-200 ease-in-out
+                                hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30
+                                focus:ring-2 focus:ring-blue-500/20 focus:outline-none
+                                disabled:opacity-50 disabled:cursor-not-allowed
+                                disabled:hover:bg-blue-600 disabled:hover:shadow-lg">
+                    {isSubmitting ? "Starting..." : "One-Shot Refine"}
+                  </button>
+                  <p className="text-xs text-gray-500 text-center mt-1">
+                    Refine immediately, no questions
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-8">
@@ -189,23 +248,25 @@ function MainContent() {
               <p className="text-gray-600 leading-relaxed">{session?.originalPrompt}</p>
             </div>
 
-            <div className="space-y-4">
-              {questions.map((q) => (
-                <div
-                  key={q._id}
-                  className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-gray-100
-                            shadow-sm transition-all duration-200 ease-in-out hover:shadow-md">
-                  <p className="font-medium text-gray-800">{q.question}</p>
-                  {q.answer && (
-                    <div className="mt-3 pl-4 border-l-2 border-gray-200">
-                      <p className="text-gray-600">
-                        <span className="font-medium text-gray-700">Answer:</span> {q.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            {session?.sessionType === "interactive" && (
+              <div className="space-y-4">
+                {questions.map((q) => (
+                  <div
+                    key={q._id}
+                    className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-gray-100
+                              shadow-sm transition-all duration-200 ease-in-out hover:shadow-md">
+                    <p className="font-medium text-gray-800">{q.question}</p>
+                    {q.answer && (
+                      <div className="mt-3 pl-4 border-l-2 border-gray-200">
+                        <p className="text-gray-600">
+                          <span className="font-medium text-gray-700">Answer:</span> {q.answer}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {isThinking && (
               <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl border border-gray-100 shadow-sm text-center">
@@ -213,34 +274,38 @@ function MainContent() {
               </div>
             )}
 
-            {currentQuestion && !currentQuestion.answer && !isThinking && (
-              <form onSubmit={handleAnswer} className="space-y-4">
-                <textarea
-                  ref={answerTextareaRef}
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  onKeyDown={handleAnswerKeyDown}
-                  placeholder="Type your answer..."
-                  className="w-full h-32 p-4 rounded-xl border border-gray-200 bg-white/50 backdrop-blur-sm
+            {session?.sessionType === "interactive" &&
+              currentQuestion &&
+              !currentQuestion.answer &&
+              !isThinking && (
+                <form onSubmit={handleAnswer} className="space-y-4">
+                  <textarea
+                    ref={answerTextareaRef}
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    onKeyDown={handleAnswerKeyDown}
+                    placeholder="Type your answer..."
+                    className="w-full h-32 p-4 rounded-xl border border-gray-200 bg-white/50 backdrop-blur-sm
                             focus:ring-2 focus:ring-gray-500/20 focus:border-gray-500 outline-none
                             transition-all duration-200 ease-in-out
                             text-gray-700 placeholder-gray-400
                             shadow-sm hover:shadow-md"
-                />
-                <button
-                  type="submit"
-                  disabled={!answer.trim()}
-                  className="w-full py-3 px-4 bg-black text-white rounded-xl font-medium
+                    disabled={isSubmitting}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!answer.trim() || isSubmitting}
+                    className="w-full py-3 px-4 bg-black text-white rounded-xl font-medium
                             shadow-lg shadow-black/20
                             transition-all duration-200 ease-in-out
                             hover:bg-gray-900 hover:shadow-xl hover:shadow-black/30
                             focus:ring-2 focus:ring-black/20 focus:outline-none
                             disabled:opacity-50 disabled:cursor-not-allowed
                             disabled:hover:bg-black disabled:hover:shadow-lg">
-                  Submit Answer
-                </button>
-              </form>
-            )}
+                    {isSubmitting ? "Submitting..." : "Submit Answer"}
+                  </button>
+                </form>
+              )}
 
             {session?.status === "complete" && session.enhancedPrompt && !isThinking && (
               <div className="space-y-8">
@@ -401,8 +466,14 @@ export default function App() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-              Vibe Code with Convex Chef
+              Cooked on Convex Chef
             </a>
+            <span className="text-gray-300">|</span>
+            <Link
+              to="https://convex.dev/"
+              className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              Powered by Convex
+            </Link>
             <span className="text-gray-300">|</span>
             <a
               href="https://github.com/waynesutton/promptkit"
@@ -410,19 +481,7 @@ export default function App() {
               rel="noopener noreferrer"
               title="GitHub Repository"
               className="text-gray-500 hover:text-gray-700 transition-colors">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="inline-block">
-                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-1.5 6-6.5.06-1.35-.49-2.6-1.5-3.5.49-1.2.46-2.5-.14-3.5A4.7 4.7 0 0 0 17 4c-1.5 0-2.8.6-4 1.5-1.2-.4-2.5-.4-4 0C7.8 4.6 6.5 4 5 4a4.7 4.7 0 0 0-2.86 1.1c-.6 1-.63 2.3-.14 3.5A4.3 4.3 0 0 0 1 12c0 5 3 6.5 6 6.5-1 1-1.5 2.5-1.5 3.5V22" />
-              </svg>
+              <Github className="inline-block h-5 w-5" /> Repo
             </a>
           </div>
         </footer>
