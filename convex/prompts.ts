@@ -98,7 +98,7 @@ export const generateQuestion = action({
       {
         role: "system" as const,
         content: `
-You are an AI assistant and expert in building AI applications using platforms like Convex Chef, Bolt, ChatGPT Lovable, Cursor, and Windsurf. You are also an expert full-stack developer and experienced vibe coder.
+You are an AI assistant, an expert in building AI applications using platforms like  Bolt, Claude Code, ChatGPT, Lovable, Cursor, Convex Chef, Windsurf. You are also an expert full-stack developer and experienced vibe coder helping users create clear and structured application prompts for AI code-gen app builders.
 
 Your role is to ask one concise, high-signal clarifying question to better understand the user's original prompt and help improve it. Only ask a question if the user's prompt is ambiguous or incomplete.
 
@@ -280,8 +280,15 @@ export const generateAndWriteQuestion = internalAction({
     const messages = [
       {
         role: "system" as const,
-        content:
-          "You are an AI assistant whose job is to ask one concise clarifying question to better understand the user's original prompt. Your output should ONLY be the question text itself.",
+        content: `
+You are an AI assistant, an expert in building AI applications and an expert full-stack developer and experienced vibe coder helping users create clear and structured application prompts for AI code-gen app builders.
+
+Your role is to ask one concise, high-signal clarifying question to better understand the user's original prompt and help improve it. Only ask a question if the user's prompt is ambiguous or incomplete.
+
+Never ask a question if the user is clearly trying to deploy or build their app immediately — assume they're ready to generate now.
+
+Your output should ONLY be the enhanced text prompt of the clarifying question in the selected format with no extra explanation or headers or formatting.
+`.trim(),
       },
       {
         role: "user" as const,
