@@ -304,6 +304,16 @@ function MainContent() {
                             disabled:hover:bg-black disabled:hover:shadow-lg">
                     {isSubmitting ? "Submitting..." : "Submit Answer"}
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSessionId(null);
+                      setPrompt("");
+                      setAnswer("");
+                    }}
+                    className="w-full text-center text-xs text-gray-500 hover:text-gray-700 underline transition-colors duration-150 mt-2">
+                    Restart
+                  </button>
                 </form>
               )}
 
@@ -422,70 +432,72 @@ function MainContent() {
 }
 
 export default function App() {
+  const location = useLocation();
+
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-white">
-        <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(100%_50%_at_50%_0%,#00A3FF21_0%,#00A3FF00_50%,#00A3FF00_100%)]"></div>
+    <div className="min-h-screen flex flex-col bg-white relative">
+      {location.pathname === "/" && (
+        <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+      )}
 
-        <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between">
-              <Link to="/" className="cursor-pointer">
-                <h2 className="text-2xl font-semibold text-black">PromptKit</h2>
-                <p className="text-sm text-gray-500 font-medium"></p>
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <Link to="/" className="cursor-pointer">
+              <h2 className="text-2xl font-semibold text-black">PromptKit</h2>
+              <p className="text-sm text-gray-500 font-medium"></p>
+            </Link>
+            <nav>
+              <Link
+                to="/tokens"
+                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1"
+                title="View Token Savings">
+                <BarChartHorizontalBig className="h-4 w-4" /> Tokens Saved
               </Link>
-              <nav>
-                <Link
-                  to="/tokens"
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1"
-                  title="View Token Savings">
-                  <BarChartHorizontalBig className="h-4 w-4" /> Tokens Saved
-                </Link>
-              </nav>
-            </div>
+            </nav>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <main className="flex-1 flex items-center justify-center px-1 pt-1 pb-2 sm:px-8 sm:pt-4 sm:pb-8">
-          <Routes>
-            <Route path="/" element={<MainContent />} />
-            <Route path="/tokens" element={<TokensSavedPage />} />
-          </Routes>
-        </main>
+      <main className="flex-1 flex items-center justify-center px-1 pt-1 pb-2 sm:px-8 sm:pt-4 sm:pb-8">
+        <Routes>
+          <Route path="/" element={<MainContent />} />
+          <Route path="/tokens" element={<TokensSavedPage />} />
+        </Routes>
+      </main>
 
-        <footer className="text-center py-4 border-t border-gray-100 mt-auto">
-          <div className="flex justify-center items-center space-x-4">
-            <Link
-              to="/tokens"
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-              Tokens Saved
-            </Link>
-            <span className="text-gray-300">|</span>
-            <a
-              href="https://chef.convex.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-              Cooked on Convex Chef
-            </a>
-            <span className="text-gray-300">|</span>
-            <Link
-              to="https://convex.dev/"
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-              Powered by Convex
-            </Link>
-            <span className="text-gray-300">|</span>
-            <a
-              href="https://github.com/waynesutton/promptkit"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="GitHub Repository"
-              className="text-gray-500 hover:text-gray-700 transition-colors">
-              <Github className="inline-block h-5 w-5" /> Repo
-            </a>
-          </div>
-        </footer>
-      </div>
-    </Router>
+      <footer className="text-center py-4 mt-auto">
+        <div className="flex justify-center items-center space-x-4">
+          <Link
+            to="/tokens"
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            Tokens Saved
+          </Link>
+          <span className="text-gray-300">|</span>
+          <a
+            href="https://chef.convex.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            Cooked on Convex Chef
+          </a>
+          <span className="text-gray-300">|</span>
+          <Link
+            to="https://convex.dev/"
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            Powered by Convex
+          </Link>
+          <span className="text-gray-300">|</span>
+          <a
+            href="https://github.com/waynesutton/promptkit"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub Repository"
+            className="text-gray-500 hover:text-gray-700 transition-colors">
+            <Github className="inline-block h-5 w-5" /> Repo
+          </a>
+        </div>
+      </footer>
+    </div>
   );
 }
