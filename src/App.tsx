@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { useState, useEffect, useRef } from "react";
 import { Id } from "../convex/_generated/dataModel";
@@ -32,7 +32,8 @@ function MainContent() {
 
   const startSession = useMutation(api.prompts.startNewSession);
   const submitAnswer = useMutation(api.prompts.answerQuestion);
-  const exportPrompt = useMutation(api.prompts.exportPrompt);
+  const exportPromptWithSchemaAction = useAction(api.prompts.exportPromptWithSchema);
+  const exportPromptMutationForChef = useMutation(api.prompts.exportPrompt);
 
   const currentQuestion = questions.find((q) => q.order === session?.currentStep);
   const isGeneratingQuestion = sessionId && session?.status === "questioning" && !currentQuestion;
@@ -101,19 +102,29 @@ function MainContent() {
 
   const handleExport = async (format: "markdown" | "json" | "xml") => {
     if (!sessionId) return;
-
-    const content = await exportPrompt({ sessionId, format });
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `enhanced-prompt.${format === "markdown" ? "md" : format}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    toast.success(`Exported as ${format.toUpperCase()}`);
+    try {
+      const content = await exportPromptWithSchemaAction({ sessionId, format });
+      const blob = new Blob([content], {
+        type:
+          format === "json"
+            ? "application/json"
+            : format === "xml"
+              ? "application/xml"
+              : "text/plain",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `enhanced-prompt-with-schema.${format === "markdown" ? "md" : format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(`Exported as ${format.toUpperCase()} with schema draft`);
+    } catch (error) {
+      console.error("Failed to export prompt with schema:", error);
+      toast.error("Failed to export prompt.");
+    }
   };
 
   // Calculate potential savings for the current session
@@ -132,10 +143,10 @@ function MainContent() {
                 Grammarly for AI Prompts
               </h1>
               <p className="text-gray-500 text-lg">
-                Enhance your prompts with AI. Export via Markdown, JSON, XML for vibe coding.
+                Enhance your prompts with AI. <br></br>Generate schema and export in Markdown, JSON,
+                or XML for vibe coding.
               </p>
             </div>
-
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <InteractiveHoverButton
                 className="w-full sm:w-auto px-4 py-2 bg-white/50 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100/50 border border-gray-200/50 transition-all duration-150"
@@ -153,7 +164,6 @@ function MainContent() {
                 text="Build Reddit Clone"
               />
             </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative group">
                 <textarea
@@ -180,7 +190,7 @@ function MainContent() {
                         disabled:hover:bg-black disabled:hover:shadow-lg">
                 Start Enhancement
               </button>
-            </form>
+            </form>{" "}
           </div>
         ) : (
           <div className="space-y-8">
@@ -264,14 +274,15 @@ function MainContent() {
 
                 <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-gray-100 shadow-sm space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Export Options</h3>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                      Export Options (with Schema Draft)
+                    </h3>
                     <div className="grid grid-cols-3 gap-4">
                       {["markdown", "json", "xml"].map((format) => (
                         <button
                           key={format}
                           onClick={() => handleExport(format as "markdown" | "json" | "xml")}
-                          className="py-3 px-4 bg-black text-white rounded-xl
-                                  font-medium
+                          className="py-3 px-4 bg-black text-white rounded-xl font-medium
                                   transition-all duration-200 ease-in-out
                                   border border-black/5
                                   focus:outline-none focus:ring-2 focus:ring-black/20
@@ -286,7 +297,7 @@ function MainContent() {
 
                   <div>
                     <h4 className="text-sm font-semibold text-gray-600 mb-3 text-center">
-                      Send to Chef
+                      Send to Chef (with Schema Draft)
                     </h4>
                     <div className="grid grid-cols-3 gap-4">
                       {["markdown", "json", "xml"].map((format) => (
@@ -295,15 +306,18 @@ function MainContent() {
                           onClick={async () => {
                             if (sessionId) {
                               try {
-                                const content = await exportPrompt({
+                                const content = await exportPromptWithSchemaAction({
                                   sessionId,
                                   format: format as "markdown" | "json" | "xml",
                                 });
                                 const chefUrl = `https://chef.convex.dev/?prefill=${encodeURIComponent(content)}`;
                                 window.open(chefUrl, "_blank");
-                                toast.success(`Sent ${format.toUpperCase()} to Chef!`);
+                                toast.success(`Sent ${format.toUpperCase()} with schema to Chef!`);
                               } catch (error) {
-                                console.error("Failed to export or send prompt:", error);
+                                console.error(
+                                  "Failed to export or send prompt with schema:",
+                                  error
+                                );
                                 toast.error("Failed to generate content for Chef.");
                               }
                             } else {
@@ -331,7 +345,7 @@ function MainContent() {
                                     shadow-sm hover:bg-blue-700 transition-colors duration-150
                                     focus:outline-none focus:ring-2 focus:ring-blue-300 flex justify-center items-center gap-2">
                         <BarChartHorizontalBig className="h-4 w-4" />
-                        View Savings ({potentialSavings.toLocaleString()} chars)
+                        View Savings
                       </button>
                     </Link>
                     <button
