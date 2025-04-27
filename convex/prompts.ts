@@ -232,7 +232,6 @@ export const exportPrompt = mutation({
         2
       );
     } else {
-      // XML
       content = `<?xml version="1.0" encoding="UTF-8"?>
 <prompt_enhancement>
   <original_prompt><![CDATA[${session.originalPrompt}]]></original_prompt>
@@ -337,49 +336,6 @@ export const generateAndWriteEnhancedPrompt = internalAction({
   },
 });
 
-// New internal action to attempt schema generation from the enhanced prompt
-export const generateSchemaFromPrompt = internalAction({
-  args: { enhancedPrompt: v.string() },
-  returns: v.string(),
-  handler: async (_ctx, args): Promise<string> => {
-    const messages: Array<{ role: "system" | "user"; content: string }> = [
-      {
-        role: "system" as const,
-        content: `
-You are an AI assistant that generates a *basic draft* Convex schema based on a detailed application prompt.
-Analyze the prompt to identify potential database tables and their fields.
-Guess appropriate Convex validator types (v.string(), v.number(), v.boolean(), v.id('otherTable'), v.optional(...)).
-Define simple indexes ("index()") on fields that seem like they would be frequently queried (like user IDs or status fields).
-Output *only* the TypeScript code for the \`convex/schema.ts\` file, including necessary imports (\`defineSchema\`, \`defineTable\`, \`v\`).
-Do not include any explanations, comments outside the code, or markdown formatting.
-If unsure about complex relationships or types, make reasonable basic guesses (e.g., use v.string() or omit the field).
-Keep the schema simple.
-`.trim(),
-      },
-      {
-        role: "user" as const,
-        content: `Generate a draft convex/schema.ts file based on this enhanced application prompt:\n\n---\n${args.enhancedPrompt}\n---\n\nOutput only the TypeScript code.`,
-      },
-    ];
-
-    try {
-      const response = await openai.chat.completions.create({ model: "gpt-4o", messages });
-      // Basic cleanup: ensure it starts with import and ends correctly
-      let schemaCode = response.choices[0].message.content?.trim() ?? "";
-      if (!schemaCode.startsWith("import")) {
-        schemaCode = `// AI generation might be incomplete\n${schemaCode}`;
-      }
-      if (!schemaCode.includes("defineSchema")) {
-        return "// AI failed to generate a valid schema structure.";
-      }
-      return schemaCode;
-    } catch (error) {
-      console.error("Error generating schema from prompt:", error);
-      return "// Error occurred during schema generation.";
-    }
-  },
-});
-
 // Updated query to list completed sessions AND their question counts
 export const listCompletedSessions = query({
   args: {},
@@ -406,70 +362,5 @@ export const listCompletedSessions = query({
     );
 
     return sessionsWithCounts;
-  },
-});
-
-// New Public Action to coordinate schema generation and export
-export const exportPromptWithSchema = action({
-  args: {
-    sessionId: v.id("sessions"),
-    format: v.union(v.literal("markdown"), v.literal("json"), v.literal("xml")),
-  },
-  handler: async (ctx, args) => {
-    // 1. Get session data
-    const session = await ctx.runQuery(api.prompts.getSession, { sessionId: args.sessionId });
-    if (!session?.enhancedPrompt) {
-      throw new Error("Enhanced prompt not found or session incomplete.");
-    }
-
-    // 2. Generate the schema draft
-    const generatedSchema = await ctx.runAction(internal.prompts.generateSchemaFromPrompt, {
-      enhancedPrompt: session.enhancedPrompt,
-    });
-
-    // 3. Get the base formatted export content
-    const baseContent = await ctx.runMutation(api.prompts.exportPrompt, {
-      sessionId: args.sessionId,
-      format: args.format,
-    });
-
-    // 4. Inject the schema into the base content based on format
-    let finalContent = "";
-    if (args.format === "markdown") {
-      const insertionPoint = "## Original Prompt";
-      const schemaSection = `## Generated Convex Schema (Draft)\n\n\`\`\`typescript\n${generatedSchema}\n\`\`\`\n\n`;
-      // Ensure the insertion point exists before replacing
-      if (baseContent.includes(insertionPoint)) {
-        finalContent = baseContent.replace(insertionPoint, schemaSection + insertionPoint);
-      } else {
-        // Fallback: Append if insertion point not found
-        finalContent = baseContent + "\n\n" + schemaSection;
-      }
-    } else if (args.format === "json") {
-      try {
-        const parsedContent = JSON.parse(baseContent);
-        parsedContent.generated_schema_draft = generatedSchema; // Add the schema key
-        finalContent = JSON.stringify(parsedContent, null, 2);
-      } catch (e) {
-        console.error("Failed to parse base JSON content for schema injection:", e);
-        console.error("Base JSON Content was:", baseContent); // Log the problematic content
-        // Fallback: Attempt to return base content, or indicate error
-        finalContent = baseContent; // Or return an error message string
-      }
-    } else {
-      // XML
-      // Insert before the final closing tag
-      const insertionPoint = "</prompt_enhancement>";
-      const schemaTag = `\n  <generated_schema_draft><![CDATA[${generatedSchema}]]></generated_schema_draft>\n`;
-      // Ensure the insertion point exists before replacing
-      if (baseContent.includes(insertionPoint)) {
-        finalContent = baseContent.replace(insertionPoint, schemaTag + insertionPoint);
-      } else {
-        // Fallback: Append if insertion point not found (less ideal for XML)
-        finalContent = baseContent + schemaTag;
-      }
-    }
-
-    return finalContent;
   },
 });
