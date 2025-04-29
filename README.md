@@ -1,4 +1,4 @@
-# PromptKit - AI Prompt Enhancer [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/waynesutton/promptkit)
+# RePrompt - AI Prompt Enhancer [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/waynesutton/promptkit)
 
 Export your prompts in Markdown, JSON, or XML—done.
 
@@ -165,4 +165,4 @@ User-defined HTTP routes are defined in the `convex/router.ts` file. We split th
 
 See the [Deployment -> Frontend](#frontend) section above and the [Convex + Netlify Hosting Docs](https://docs.convex.dev/production/hosting/netlify) for details.
 
-# promptkit
+# reprompt
