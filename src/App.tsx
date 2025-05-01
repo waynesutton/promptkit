@@ -168,26 +168,30 @@ function MainContent() {
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h1 className="text-3xl sm:text-3xl font-bold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                Prompt Enhancement
+                Prompt Enhancement for Vibe Coding
               </h1>
               <p className="text-gray-500 text-lg">
-                Enhance your prompts with AI. Export via Markdown, JSON, XML for vibe coding.
+                Enhance your prompts with AI. Export via Markdown, JSON, XML.
               </p>
+            </div>
+
+            <div className="text-center py-[1px]">
+              <p className="text-[#2A2825]">Example prompts:</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <InteractiveHoverButton
-                className="w-full sm:w-auto px-4 py-2 bg-white/50 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100/50 border border-gray-200/50 transition-all duration-150"
+                className="w-full sm:w-auto px-4 py-2 bg-gray-100 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 border border-gray-200/50 transition-all duration-150"
                 onClick={() => setPrompt("Build a hacker news clone")}
                 text="Build Hacker News Clone"
               />
               <InteractiveHoverButton
-                className="w-full sm:w-auto px-4 py-2 bg-white/50 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100/50 border border-gray-200/50 transition-all duration-150"
-                onClick={() => setPrompt("Build a discord clone")}
-                text="Build Discord Clone"
+                className="w-full sm:w-auto px-4 py-2 bg-gray-100 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 border border-gray-200/50 transition-all duration-150"
+                onClick={() => setPrompt("Build a SaaS landing page")}
+                text="Build a SaaS landing page"
               />
               <InteractiveHoverButton
-                className="w-full sm:w-auto px-4 py-2 bg-white/50 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100/50 border border-gray-200/50 transition-all duration-150"
+                className="w-full sm:w-auto px-4 py-2 bg-gray-100 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 border border-gray-200/50 transition-all duration-150"
                 onClick={() => setPrompt("Build a reddit clone")}
                 text="Build Reddit Clone"
               />
@@ -370,7 +374,14 @@ function MainContent() {
 
                   <div>
                     <h4 className="text-sm font-semibold text-gray-600 mb-3 text-center">
-                      Send to Chef
+                      Send to{" "}
+                      <a
+                        href="https://chef.convex.dev"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:text-blue-600 transition-colors">
+                        Convex Chef
+                      </a>
                     </h4>
                     <div className="grid grid-cols-3 gap-4">
                       {["markdown", "json", "xml"].map((format) => (
@@ -472,7 +483,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-1 pt-1 pb-2 sm:px-8 sm:pt-4 sm:pb-8">
+      <main className="flex-1 flex items-center justify-center px-1 pb-2 sm:px-8 sm:pb-8">
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/tokens" element={<TokensSavedPage />} />
