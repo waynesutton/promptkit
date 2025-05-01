@@ -301,7 +301,7 @@ Your goals:
 
 When asking questions, prioritize these categories in order:
 1. What are you building? (product, brand, feature, or vibe)
-2. Layout or fonts? (e.g., grid system, font family)
+2. Layout or fonts? (e.g., grid system, visual elements, font family)
 3. Color scheme? (prefer hex codes)
 4. Animations or motion? (e.g., parallax, scroll-triggered)
 5. Tone or copy? (real headlines, casual vs professional voice)
