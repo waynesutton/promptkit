@@ -167,31 +167,31 @@ function MainContent() {
         {!sessionId ? (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h1 className="text-3xl sm:text-3xl font-bold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                Prompt Enhancement for Vibe Coding
+              <h1 className="text-3xl sm:text-4xl font-md bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                What do you want to build?
               </h1>
-              <p className="text-gray-500 text-lg">
-                Enhance your prompts with AI. Export via Markdown, JSON, XML.
+              <p className="text-gray-500  py-[1px] text-md">
+                Enhance your prompts for Vibe Coding. Export to Markdown, JSON, or XML.
               </p>
             </div>
 
             <div className="text-center py-[1px]">
-              <p className="text-[#2A2825]">Example prompts:</p>
+              <p className="text-gray-500 text-sm">Example prompts:</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <InteractiveHoverButton
-                className="w-full sm:w-auto px-4 py-2 bg-gray-100 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 border border-gray-200/50 transition-all duration-150"
+                className="w-full sm:w-auto px-4 py-2 bg-[#F8F7F6] backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-[#EEEDED] border border-gray-200/50 transition-all duration-150"
                 onClick={() => setPrompt("Build a hacker news clone")}
                 text="Build Hacker News Clone"
               />
               <InteractiveHoverButton
-                className="w-full sm:w-auto px-4 py-2 bg-gray-100 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 border border-gray-200/50 transition-all duration-150"
+                className="w-full sm:w-auto px-4 py-2 bg-[#F8F7F6]  backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-[#EEEDED] border border-gray-200/50 transition-all duration-150"
                 onClick={() => setPrompt("Build a SaaS landing page")}
                 text="Build a SaaS landing page"
               />
               <InteractiveHoverButton
-                className="w-full sm:w-auto px-4 py-2 bg-gray-100 backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-200 border border-gray-200/50 transition-all duration-150"
+                className="w-full sm:w-auto px-4 py-2 bg-[#F8F7F6] backdrop-blur-sm rounded-lg text-sm font-medium text-gray-700 shadow-sm hover:bg-[#EEEDED] border border-gray-200/50 transition-all duration-150"
                 onClick={() => setPrompt("Build a reddit clone")}
                 text="Build Reddit Clone"
               />
@@ -205,10 +205,11 @@ function MainContent() {
                   onKeyDown={handlePromptKeyDown}
                   placeholder="What do you want to build? Enter your prompt here..."
                   className="w-full h-40 p-4 rounded-xl border border-gray-200 bg-white/50 backdrop-blur-sm
-                            focus:ring-2 focus:ring-gray-500/20 focus:border-gray-500 outline-none
+                            focus:ring-2 focus:ring-black/20 focus:border-none outline-none
+                            hover:ring-2 hover:ring-black/20
                             transition-all duration-200 ease-in-out
                             text-gray-700 placeholder-gray-400
-                            shadow-sm hover:shadow-md"
+                            shadow shadow-black/5"
                   disabled={isSubmitting}
                 />
               </div>
@@ -228,7 +229,7 @@ function MainContent() {
                     {isSubmitting ? "Starting..." : "Start Enhancement"}
                   </button>
                   <p className="text-xs text-gray-500 text-center mt-1">
-                    3-question interactive flow
+                    1-5-question interactive flow
                   </p>
                 </div>
                 <div className="flex-1">
@@ -459,12 +460,12 @@ export default function App() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white relative">
+    <div className="min-h-screen flex flex-col bg-[#F8F7F6] relative">
       {location.pathname === "/" && (
-        <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+        <div className="absolute inset-0 -z-10 h-full w-full bg-[#F8F7F6] bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
       )}
 
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="cursor-pointer">
