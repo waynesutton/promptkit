@@ -1,6 +1,6 @@
 # RePrompt - AI Prompt Enhancer [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/waynesutton/promptkit)
 
-Export your prompts in Markdown, JSON, or XML—done.
+Enhance your prompts for Vibe Coding. Export to Markdown, JSON, or XML. Send directly to Convex Chef features.
 
 This application helps users refine their initial ideas into detailed, structured prompts. It asks clarifying questions and then generates an enhanced prompt based on the original idea and the user's answers. The final prompt can be exported in Markdown, JSON, or XML format, or sent directly to [Convex Chef](https://chef.convex.dev/).
 
@@ -10,21 +10,20 @@ This project is built with [Vite](https://vitejs.dev/) (frontend) and [Convex](h
 
 - **Interactive Prompt Refinement:** Guides users through a series of up to 3 AI-generated clarifying questions to flesh out their initial prompt idea.
 - **One-Shot Refinement:** Option to immediately enhance the prompt without interactive questions.
-- **AI-Powered Enhancement:** Leverages OpenAI's GPT-4o model (configurable) to generate a comprehensive and structured prompt based on user input.
+- **AI-Powered Enhancement:** Leverages OpenAI's GPT-4o model (configurable via environment variables) to generate questions and enhanced prompts.
 - **"Thinking..." Indicator:** Provides visual feedback with animated dots while waiting for AI responses.
 - **Multiple Export Formats:** Allows downloading the final enhanced prompt as Markdown, JSON, or XML files (with download icons).
 - **Direct Send to Convex Chef:** Integrates with Convex Chef, allowing users to send the generated prompt directly in the selected format (Markdown, JSON, or XML) via a prefilled URL (with external link icons).
 - **Enhancement Dashboard (`/tokens`):**
-  - Displays total prompts enhanced and average clarification questions asked.
-  - Shows average character reduction percentage (original vs. enhanced prompt).
-  - Visualizes character count comparison with a bar chart for recent sessions.
+  - Displays key metrics: Total Prompts Enhanced, Average Questions per Prompt, and Average Character Reduction percentage.
+  - Visualizes character count comparison (Original vs. Enhanced) with a bar chart for the last 15 sessions.
   - Explains the benefits of prompt structuring for potential token savings, referencing principles from [incident.io](https://incident.io).
-- **Session Management:** Tracks the prompt enhancement process within a session.
-- **Keyboard Shortcuts:** Supports Enter key submission for answer form.
+- **Session Management:** Tracks the prompt enhancement process within a session (persisted in Convex database).
+- **Keyboard Shortcuts:** Supports Enter key submission for the answer input form.
 - **UI/UX:**
   - Provides a simple and intuitive user interface built with React and Tailwind CSS.
-  - Auto-focuses the answer input field when needed.
-  - Includes quick prompt examples (e.g., "Build Hacker News Clone").
+  - Auto-focuses the answer input field when a question is presented.
+  - Includes quick prompt examples (e.g., "Build Hacker News Clone", "Build a SaaS landing page", "Build Reddit Clone").
   - Clear "Start Over" button with icon.
   - Navigation links in header/footer.
 - **(Example) Simple Authentication:** Includes basic Convex Auth setup with Anonymous and Password providers (intended as a starting point).

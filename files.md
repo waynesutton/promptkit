@@ -28,7 +28,7 @@ This document provides a brief description of the main files in the project.
 - `convex/auth.config.ts`: Configures the authentication providers used with Convex Auth (e.g., Clerk, passwordless).
 - `convex/auth.ts`: Sets up Convex Auth, provides authentication helper functions (`signIn`, `signOut`, `loggedInUser` query).
 - `convex/http.ts`: Defines the main HTTP router, integrating authentication routes.
-- `convex/prompts.ts`: Contains the core backend logic for the prompt enhancement feature, including database queries (`getSession`, `getQuestions`), mutations (`startNewSession`, `answerQuestion`, `exportPrompt`), and actions (`generateQuestion`, `generateEnhancedPrompt`).
+- `convex/prompts.ts`: Contains the core backend logic for prompt enhancement. Includes database queries (`getSession`, `getQuestions`, `listCompletedSessions`), mutations (`startNewSession`, `answerQuestion`, `exportPrompt`, `writeQuestion`, `writeEnhancedPrompt`), and actions (`generateQuestion`, `generateEnhancedPrompt`, `generateAndWriteQuestion`, `generateAndWriteEnhancedPrompt`, `generateOneShotRefinement`). Handles both interactive (question-based) and one-shot refinement flows.
 - `convex/router.ts`: Initializes the Convex HTTP router instance. (Note: Currently unused in the example provided in README, but kept for structure).
 - `convex/schema.ts`: Defines the database schema for the application, including tables like `sessions`, `questions`, `exports`, and the tables required by `@convex-dev/auth`.
 - `convex/tsconfig.json`: TypeScript configuration specific to the Convex backend functions.
@@ -36,11 +36,11 @@ This document provides a brief description of the main files in the project.
 ## `src/` Directory (Frontend)
 
 - `src/main.tsx`: The main entry point for the React application. Initializes the Convex client and wraps the app with the auth provider and router.
-- `src/App.tsx`: The root React component containing the main UI structure (Header, Footer, Routing), session logic, form handling, export functionality, and interaction with Convex backend functions.
+- `src/App.tsx`: The root React component containing the main UI structure (Header, Footer, Routing via `react-router-dom`), session state management, form handling for prompt input and answers, logic for interactive and one-shot enhancement flows, export functionality (download and send to Convex Chef), and interaction with Convex backend functions. Renders `MainContent` or `TokensSavedPage` based on the route.
 - `src/index.css`: Global CSS styles and Tailwind CSS directives.
 - `src/SignInForm.tsx`: A React component providing the UI for user sign-in (currently unused but available).
 - `src/SignOutButton.tsx`: A React component that displays a sign-out button (currently unused but available).
 - `src/components/ui/interactive-hover-button.tsx`: A reusable UI component for buttons with interactive hover effects.
-- `src/pages/TokensSavedPage.tsx`: React component for the `/tokens` route, displaying enhancement statistics and charts.
+- `src/pages/TokensSavedPage.tsx`: React component for the `/tokens` dashboard route. Fetches completed sessions, calculates KPIs (total enhanced, avg questions, avg char reduction), and displays a bar chart comparing original vs. enhanced character counts.
 - `src/vite-env.d.ts`: TypeScript type definitions for Vite environment variables.
 - `src/lib/utils.ts`: (Assumed based on typical `shadcn/ui` setup) Utility functions, possibly for class name merging.

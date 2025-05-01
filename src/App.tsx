@@ -500,7 +500,7 @@ export default function App() {
           </Link>
           <span className="text-gray-300">|</span>
           <a
-            href="https://chef.convex.dev"
+            href="https://chef.convex.dev/?utm_source=repromptdemoapp"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
@@ -508,7 +508,7 @@ export default function App() {
           </a>
           <span className="text-gray-300">|</span>
           <Link
-            to="https://convex.dev/"
+            to="https://www.convex.dev/?utm_source=repromptdemoapp"
             className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
             Powered by Convex
           </Link>
